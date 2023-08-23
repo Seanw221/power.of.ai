@@ -10,32 +10,41 @@ const Demo = () => {
 
   const [getSummary,{error, isFetching}] = useLazyGetSummaryQuery();
 
-  useEffect(()=> {
-    const articlesFromLocalStorage =JSON.parse(localStorage.getItem('articles'))
-
-    if(articlesFromLocalStorage){setAllArticles(articlesFromLocalStorage)}
-
+  useEffect(() => {
+    const articlesFromLocalStorage = JSON.parse(localStorage.getItem('articles'));
+    if (articlesFromLocalStorage) {
+      setAllArticles(articlesFromLocalStorage);
+    }
   }, []);
+  
 
-  const handleSubmit= async (e)=>{e.preventDefault();const {data} = await getSummary({articleUrl: article.url}); if (data?.summary){
-    const newArticle= {...article, summary: data.summary};
-    const updatedAllArticles =[newArticle, ...allArticles];
-
-    setArticle(newArticle);
-    setAllArticles(updatedAllArticles);
-
-    localStorage.setItem('articles', JSON.stringify(updatedAllArticles));
-  }}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await getSummary({ articleUrl: article.url });
+      if (data?.summary) {
+        const newArticle = { ...article, summary: data.summary };
+        setArticle(newArticle);
+        setAllArticles((prevArticles) => [newArticle, ...prevArticles]);
+        localStorage.setItem('articles', JSON.stringify([...allArticles, newArticle]));
+      }
+    } catch (error) {
+      console.error('Error summarizing article:', error);
+    }
+  };
+  
+  
+  
   const handleCopy = (copyURL) =>{
-    setCopied(copyUrl);
-    navigator.clipboard.writeText(copyUrl);
-    setTimeout(() => setCopied(false), 4000);
+    setCopied(copyURL);
+    navigator.clipboard.writeText(copyURL);
+    setTimeout(() => setCopied(false), 5000);
   }
   return (
     <section className="mt-16 w-full max-w-x1">
 
       <div className="flex flex-col w-full gap-2">
-        <form className="relative flex justify-center items-center" onSubmit={handleSubmit => {}}>  
+        <form className="relative flex justify-center items-center" onSubmit={handleSubmit}>  
          <img src={linkIcon} alt="link_icon" className="absolute left-0 my-2 ml-3 w-5"/>
 
          <input type="url" placeholder="Enter a URL" value={article.url} onChange={(e) =>setArticle({...article, url: e.target.value})} required className="url_input peer"/>
@@ -67,7 +76,7 @@ const Demo = () => {
           
       </div>
 
-      {/*Display Results*/}
+
       <div className="my-10 max-w-full flex justify-center 
       items-center">
         {isFetching? (
