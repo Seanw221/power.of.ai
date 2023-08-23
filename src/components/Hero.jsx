@@ -11,10 +11,10 @@ const Hero = () => {
      </nav>
 
      <h1 className="head_text">
-      The Summarization of Articles with <br className="max-md:hidden"/> <span className="orange_gradient">OpenAI GPT-4</span>
+      Lets <span className="orange_gradient">Summarize Articles</span> with <br className="max-md:hidden"/> <span className="orange_gradient">OpenAI GPT-4</span>
      </h1>
      <h2 className="desc">
-      An open-source article summarizer that transforms lengthy articles into clear and concise summaries
+      An open-source article summarizer that transforms lengthy articles into clear and concise summaries!
      </h2>
     </header>
   )
